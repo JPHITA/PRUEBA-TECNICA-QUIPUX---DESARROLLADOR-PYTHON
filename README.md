@@ -98,4 +98,7 @@ curl -X POST http://localhost:8000/predict \
 ---
 
 Realizado por: Juan Nicolas Piedrahita Salas
+
 17 de enero de 2025
+
+jphita18@gmail.com
