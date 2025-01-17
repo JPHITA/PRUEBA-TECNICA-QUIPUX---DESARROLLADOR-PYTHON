@@ -39,11 +39,14 @@ class PredictInput(BaseModel):
     petal_length: float
     petal_width: float
 
+
+class PredictOutput(BaseModel):
+    prediccion: list[str]
+
 @app.post("/predict")
-def predict(input_data: list[PredictInput]):
+def predict(input_data: list[PredictInput]) -> PredictOutput:
 
     processed_data = list(map(lambda x: x.model_dump(mode="json"), input_data))
-
     processed_data = modelo.transformar_caracteristicas(processed_data)
     
-    return JSONResponse({"prediccion": modelo.predecir(processed_data)})
+    return JSONResponse({"prediccion": modelo.predecir(processed_data)}, status_code=200)
