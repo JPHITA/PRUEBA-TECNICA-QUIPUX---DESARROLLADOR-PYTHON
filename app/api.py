@@ -1,10 +1,23 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from contextlib import asynccontextmanager
+
+from model import xgb_model
+
+modelo: xgb_model = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    modelo = xgb_model()
+
+    yield
+
+    del modelo
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
