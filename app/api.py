@@ -5,13 +5,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from contextlib import asynccontextmanager
 
-from model import xgb_model
+from model import xgb_iris_model
 
-modelo: xgb_model = None
+modelo: xgb_iris_model = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    modelo = xgb_model()
+    global modelo
+
+    modelo = xgb_iris_model()
 
     yield
 
@@ -39,5 +41,9 @@ class PredictInput(BaseModel):
 
 @app.post("/predict")
 def predict(input_data: list[PredictInput]):
+
+    processed_data = list(map(lambda x: x.model_dump(mode="json"), input_data))
+
+    processed_data = modelo.transformar_caracteristicas(processed_data)
     
-    return JSONResponse({"message": "prediccion"})
+    return JSONResponse({"prediccion": modelo.predecir(processed_data)})
